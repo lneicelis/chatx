@@ -1,0 +1,25 @@
+{
+  "name": "chatx",
+  "version": "0.1.0",
+  "description": "Real time chat applciation",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luknei/chatx.git"
+  },
+  "keywords": [
+    "realtime",
+    "chat",
+    "rxjs",
+    "rethinkdb"
+  ],
+  "author": "Lukas Neicelis",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "https://github.com/luknei/chatx/issues"
+  },
+  "homepage": "https://github.com/luknei/chatx#readme"
+}
