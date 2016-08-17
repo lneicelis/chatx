@@ -1,14 +1,24 @@
 import {Observable} from 'rx';
 import {authenticateSocket} from '../utils/auth';
+import Socket = SocketIO.Socket;
 
 const EVENT_ACTION = 'action';
 
-export function socket$Factory(io) {
+export function socket$Factory(io): Observable<Socket> {
     return Observable.create(observer => {
         io.on('connection', socket => {
             observer.onNext(socket);
         });
     });
+}
+
+export function createSocketDisconnect$(socket$) {
+    return socket$
+        .flatMap((socket: Socket) => {
+            return Observable.fromEvent(socket, 'disconnect')
+                .map(() => socket)
+                .first()
+        })
 }
 
 export function authorizedSocket$Factory(socket$: Observable) {

@@ -7,9 +7,9 @@ export function authenticateSocket(socket) {
 
     console.log('token');
 
-    socket.userId = jwt.verify(token, config.secret).userId;
-    // socket.userId = 'testId';
-    console.log('userId', socket.userId);
+    // socket.userId = jwt.verify(token, config.secret).userId;
+    socket.userId = 'b76ac650-7e7e-4555-9d08-ad560dd0ca1f';
+    // console.log('userId', socket.userId);
 
     return socket;
 }

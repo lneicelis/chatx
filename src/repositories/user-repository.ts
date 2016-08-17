@@ -20,7 +20,16 @@ export const userQuery = curry(
     }
 );
 
-export const user$Factory = curry(
+export const updateUser = curry(
+    (userId:string, data, db:Db) => {
+        return db.table('users')
+            .get(userId)
+            .update(data)
+            .run();
+    }
+);
+
+export const getUser = curry(
     (userId:string, db:Db) => {
         return Observable.fromPromise(
             userQuery(db, userId).run()
