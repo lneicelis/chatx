@@ -1,4 +1,5 @@
-import {Db, expr} from 'rethinkdbdash';
+import {r} from '../observables/database';
+import {Db} from 'rethinkdbdash';
 import {curry} from 'ramda';
 import {changes$Factory} from './utils';
 import {Observable} from 'rx';
@@ -9,11 +10,13 @@ class Channel {
     title:string;
 }
 
+console.log(r.expr);
+
 export const findChannelsQuery = curry(
     (db:Db, channelsIds:string[]) => {
         return db.table('channels')
             .filter(channel => {
-                return expr(channelsIds)
+                return r.expr(channelsIds)
                     .contains(channel('id'))
             })
     }
@@ -22,7 +25,7 @@ export const findChannelsQuery = curry(
 export const findChannels = curry(
     (db:Db, channelsIds:string[]) => {
         return Observable.fromPromise(
-            findChannels(db, channelsIds).run()
+            findChannelsQuery(db, channelsIds).run()
         );
     }
 );

@@ -2,7 +2,7 @@ import {Observable} from 'rx'
 import * as rFactory from 'rethinkdbdash';
 import {database$factory} from '../repositories/utils';
 
-const r = rFactory({
+export const r = rFactory({
     host: 'localhost',
     port: 28015
 });
