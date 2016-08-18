@@ -1,17 +1,25 @@
 import {Db} from 'rethinkdbdash';
-import {curry} from 'ramda';
+import {curry, memoize} from 'ramda';
 import {changes$Factory} from './utils';
 import {Observable} from 'rx';
+import {db} from '../observables/database';
 
 class User {
     id:string;
     username:string;
+    readChannels:string[];
+    writeChannels:string[];
+    socketConnections: number;
 }
 
 interface UserChange {
     'old_val':User|null
     'new_val':User|null
 }
+
+export const createUserUpdate$ = memoize(
+    userId => userUpdate$Factory(userId, db).share()
+);
 
 export const userQuery = curry(
     (db:Db, userId:string) => {

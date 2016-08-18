@@ -30,3 +30,8 @@ export const findLatestInChannels = curry(
             .run()
     }
 );
+
+export const createMessages$ = (db): Observable<Message> => {
+    return changes$Factory(db.table('messages'))
+        .map(change => change.new_val);
+};
