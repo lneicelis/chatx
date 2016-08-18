@@ -1,9 +1,9 @@
 import {merge, curry} from 'ramda';
 import {Observable} from 'rx';
 import {createDebugObserver} from '../../utils/debug-observer';
-import {C2S_SEND_MESSAGE} from '../action-types';
+import {C2S_SEND_MESSAGE, S2C_SEND_MESSAGES} from '../action-types';
 import {getUser} from '../../repositories/user-repository';
-import {persistMessage} from '../../repositories/message-repository';
+import {persistMessage, findLatestInChannels} from '../../repositories/message-repository';
 
 // Todo assert that user can write to channel
 export const isMessageValid = message => {
@@ -27,6 +27,25 @@ export const validMessage$ = curry(
             });
     }
 );
+
+export function pushLatestMessages(db$, socket$) {
+    socket$
+        .flatMap(socket => db$
+            .flatMap(getUser(socket.userId))
+            .map(user => [
+                ...user.readChannels,
+                ...user.writeChannels
+            ])
+            .flatMap(channelsIds => db$
+                .flatMap(db => findLatestInChannels(db, channelsIds))
+            )
+            .do(messages => socket.emit(S2C_SEND_MESSAGES, messages))
+        )
+        .subscribe(
+            createDebugObserver('pushLatestMessages')
+        )
+    ;
+}
 
 export function handleIncomingMessages(db$, actions$) {
     return actions$

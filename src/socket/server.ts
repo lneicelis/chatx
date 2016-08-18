@@ -6,7 +6,7 @@ import {
     socket$Factory, authorizedSocket$Factory, actions$Factory, createSocketDisconnect$
 } from '../observables/socket';
 import {handleSocketConnection, handleSocketDisconnect} from './actions/connection-actions';
-import {handleIncomingMessages} from './actions/message-actions';
+import {pushLatestMessages, handleIncomingMessages} from './actions/message-actions';
 import {pushChannels} from './actions/channel-actions';
 
 export function createSocket(server) {
@@ -22,6 +22,7 @@ export function createSocket(server) {
     handleSocketDisconnect(db$, socketDisconnect$);
 
     pushChannels(db$, socket$);
+    pushLatestMessages(db$, socket$);
 
     handleIncomingMessages(db$, actions$);
 }

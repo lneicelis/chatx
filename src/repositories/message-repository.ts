@@ -1,3 +1,4 @@
+import {r} from '../observables/database';
 import {Db} from 'rethinkdbdash';
 import {curry} from 'ramda';
 import {changes$Factory} from './utils';
@@ -17,39 +18,20 @@ interface UserChange {
 }
 
 export const persistMessage = curry(
-    (db: Db, message: Message) => {
+    (db:Db, message:Message) => {
         return db.table('messages')
             .insert(message)
             .run();
     }
 );
-
-export const userQuery = curry(
-    (db:Db, userId:string) => {
-        return db.table('users')
-            .get(userId);
-    }
-);
-
-export const user$Factory = curry(
-    (userId:string, db:Db) => {
-        return Observable.fromPromise(
-            userQuery(db, userId).run()
-        );
-    }
-);
-
-export const userChange$Factory = curry(
-    (userId:string, db:Db):Observable<UserChange> => {
-        return changes$Factory(
-            userQuery(db, userId)
-        );
-    }
-);
-
-export const userUpdate$Factory = curry(
-    (userId:string, db:Db) => {
-        return userChange$Factory(userId, db)
-            .map(changes => changes.new_val)
+export const findLatestInChannels = curry(
+    (db:Db, channelsIds:string[]) => {
+        return db.table('messages')
+            .filter(function (message) {
+                return r.expr(channelsIds)
+                    .contains(message('channelId'))
+            })
+            .limit(10)
+            .run()
     }
 );
