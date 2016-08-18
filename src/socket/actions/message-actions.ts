@@ -1,7 +1,7 @@
 import {merge, curry} from 'ramda';
 import {Observable} from 'rx';
 import {createDebugObserver} from '../../utils/debug-observer';
-import {C2S_SEND_MESSAGE, S2C_SEND_MESSAGES} from '../action-types';
+import {emitAction, C2S_SEND_MESSAGE, S2C_SEND_MESSAGES} from '../action-types';
 import {getUser, createUserUpdate$} from '../../repositories/user-repository';
 import {persistMessage, findLatestInChannels} from '../../repositories/message-repository';
 
@@ -37,10 +37,10 @@ export function pushNewMessages(message$, socket$) {
             return message$
                 .withLatestFrom(
                     channelsIds$,
-                    (message, channelsIds) => channelsIds.includes(message.channelId) ? message : null
+                    (message, channelsIds) => channelsIds.includes(message.channelId) ? [message] : []
                 )
-                .filter(message => message)
-                .do(message => socket.emit(S2C_SEND_MESSAGES, [message]))
+                .filter(messages => messages.length)
+                .do(emitAction(socket, S2C_SEND_MESSAGES))
         })
         .subscribe(
             createDebugObserver('pushNewMessages')
@@ -58,7 +58,7 @@ export function pushLatestMessages(db$, socket$) {
             .flatMap(channelsIds => db$
                 .flatMap(db => findLatestInChannels(db, channelsIds))
             )
-            .do(messages => socket.emit(S2C_SEND_MESSAGES, messages))
+            .do(emitAction(socket, S2C_SEND_MESSAGES))
         )
         .subscribe(
             createDebugObserver('pushLatestMessages')

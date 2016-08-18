@@ -2,7 +2,7 @@ import {createDebugObserver} from '../../utils/debug-observer';
 import {socketDisconnected} from '../../observables/socket';
 import {userUpdate$Factory} from '../../repositories/user-repository';
 import {findChannels} from '../../repositories/channels-repository';
-import {S2C_SEND_CHANNELS} from '../action-types';
+import {emitAction, S2C_SEND_CHANNELS} from '../action-types';
 
 
 // TODO: flat map not user but only user channels and distinct until changed
@@ -20,7 +20,7 @@ export function pushChannels(db$, socket$) {
             .flatMap(channelsIds => db$
                 .flatMap(db => findChannels(db, channelsIds))
             )
-            .do(channels => socket.emit(S2C_SEND_CHANNELS, channels))
+            .do(emitAction(socket, S2C_SEND_CHANNELS))
         )
         .subscribe(
             createDebugObserver('pushChannels')
