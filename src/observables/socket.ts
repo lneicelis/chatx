@@ -42,3 +42,7 @@ export function socketActions$(socket) {
         return () => socket.removeListener(EVENT_ACTION, handler);
     });
 }
+
+export function socketDisconnected(socket) {
+    return Observable.fromEvent(socket, 'disconnect').first();
+}

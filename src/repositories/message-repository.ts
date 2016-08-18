@@ -12,11 +12,6 @@ class Message {
     sentAt:string;
 }
 
-interface UserChange {
-    'old_val':Message|null
-    'new_val':Message|null
-}
-
 export const persistMessage = curry(
     (db:Db, message:Message) => {
         return db.table('messages')

@@ -9,6 +9,7 @@ export function database$factory(dbName: string) {
 
 export function changes$Factory(query): Observable {
     return Observable.create(observer => {
+        let dispose;
         // TODO: close connection on dispose
         query.changes().run((err, cursor) => {
             if (err) observer.onError(err);
@@ -18,6 +19,13 @@ export function changes$Factory(query): Observable {
 
                 observer.onNext(change);
             });
+
+            dispose = cursor.close.bind(cursor);
         });
+
+        return () => {
+            console.log('changes connection closed', !!dispose);
+            dispose();
+        }
     });
 }

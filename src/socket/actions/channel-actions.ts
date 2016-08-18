@@ -1,14 +1,18 @@
 import {createDebugObserver} from '../../utils/debug-observer';
-import {getUser} from '../../repositories/user-repository';
+import {socketDisconnected} from '../../observables/socket';
+import {userUpdate$Factory} from '../../repositories/user-repository';
 import {findChannels} from '../../repositories/channels-repository';
 import {S2C_SEND_CHANNELS} from '../action-types';
 
 
-// TODO: flatMap user changes until socket disconnect
+// TODO: flat map not user but only user channels and distinct until changed
 export function pushChannels(db$, socket$) {
     socket$
         .flatMap(socket => db$
-            .flatMap(getUser(socket.userId))
+            .flatMap(db => {
+                return userUpdate$Factory(socket.userId, db)
+                    .takeUntil(socketDisconnected(socket))
+            })
             .map(user => [
                 ...user.readChannels,
                 ...user.writeChannels
