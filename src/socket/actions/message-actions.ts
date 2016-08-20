@@ -5,16 +5,9 @@ import {emitAction, C2S_SEND_MESSAGE, S2C_SEND_MESSAGES} from '../action-types';
 import {getUser, createUserUpdate$} from '../../repositories/user-repository';
 import {persistMessage, findLatestInChannels} from '../../repositories/message-repository';
 
-// Todo assert that user can write to channel
-export const isMessageValid = message => {
-    return !!message.userId
-        && !!message.channelId
-        && !!message.body;
-};
-
 export const validMessage$ = curry(
-    (getUser, db$, message) => {
-        return db$.flatMap(getUser(message.userId))
+    (getUser, message) => {
+        return getUser(message.userId)
             .filter(user => {
                 return user.writeChannels
                     && user.writeChannels.includes(message.channelId)
@@ -49,18 +42,14 @@ export function pushNewMessages(message$, socket$) {
 
 export function pushLatestMessages(db$, socket$) {
     socket$
-        .flatMap(socket => db$
-            .flatMap(getUser(socket.userId))
+        .flatMap(socket => getUser(socket.userId)
             .map(user => user.readChannels)
-            .flatMap(channelsIds => db$
-                .flatMap(db => findLatestInChannels(db, channelsIds))
-            )
+            .flatMap(readChannelsIds => findLatestInChannels(readChannelsIds))
             .do(emitAction(socket, S2C_SEND_MESSAGES))
         )
         .subscribe(
             createDebugObserver('pushLatestMessages')
-        )
-    ;
+        );
 }
 
 export function handleIncomingMessages(db$, actions$) {
@@ -70,12 +59,8 @@ export function handleIncomingMessages(db$, actions$) {
             {userId: action.userId},
             action.payload
         ))
-        .flatMap(validMessage$(getUser, db$))
-        .withLatestFrom(
-            db$,
-            (message, db) => persistMessage(db, message)
-        )
-        .flatMap(result => result)
+        .flatMap(validMessage$(getUser))
+        .flatMap(persistMessage)
         .subscribe(
             createDebugObserver('handleIncomingMessages')
         );

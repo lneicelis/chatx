@@ -1,4 +1,4 @@
-import {r} from '../observables/database';
+import {r, db} from '../observables/database';
 import {Db} from 'rethinkdbdash';
 import {curry} from 'ramda';
 import {changes$Factory} from './utils';
@@ -12,24 +12,24 @@ class Message {
     sentAt:string;
 }
 
-export const persistMessage = curry(
-    (db:Db, message:Message) => {
-        return db.table('messages')
-            .insert(message)
-            .run();
-    }
-);
-export const findLatestInChannels = curry(
-    (db:Db, channelsIds:string[]) => {
-        return db.table('messages')
-            .filter(function (message) {
-                return r.expr(channelsIds)
-                    .contains(message('channelId'))
-            })
-            .limit(10)
-            .run()
-    }
-);
+export function persistMessage(message:Message, database:Db = db) {
+    return database
+        .table('messages')
+        .insert(message)
+        .run();
+}
+
+
+export function findLatestInChannels(channelsIds:string[], limit = 10, database:Db = db) {
+    return database
+        .table('messages')
+        .filter(message => {
+            return r.expr(channelsIds)
+                .contains(message('channelId'))
+        })
+        .limit(limit)
+        .run()
+}
 
 export const createMessages$ = (db): Observable<Message> => {
     return changes$Factory(db.table('messages'))

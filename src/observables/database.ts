@@ -1,14 +1,12 @@
 import {Observable} from 'rx'
 import * as rFactory from 'rethinkdbdash';
+import config from '../config';
 import {database$factory} from '../repositories/utils';
 
-export const r = rFactory({
-    host: 'localhost',
-    port: 28015
-});
+export const r = rFactory(config.rethinkdb);
 
-export const db = r.db('chatx');
+export const db = r.db(config.rethinkdb.db);
 
 
 export const r$ = Observable.of(r);
-export const db$ = r$.flatMap(database$factory('chatx'));
+export const db$ = r$.flatMap(database$factory(config.rethinkdb.db));

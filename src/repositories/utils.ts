@@ -1,5 +1,10 @@
 import {Observable} from 'rx';
-import {Db} from 'rethinkdbdash';
+import {Db, Sequence} from 'rethinkdbdash';
+
+class Change {
+    new_val: any;
+    old_val: any;
+}
 
 export function database$factory(dbName: string) {
     return function (r): Observable<Db>  {
@@ -7,7 +12,11 @@ export function database$factory(dbName: string) {
     };
 }
 
-export function changes$Factory(query): Observable {
+export function runQuery(query: Sequence): Observable {
+    return Observable.fromPromise(query.run())
+}
+
+export function changes$Factory(query): Observable<Change> {
     return Observable.create(observer => {
         let dispose;
         // TODO: close connection on dispose

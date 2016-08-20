@@ -6,8 +6,9 @@ export default {
         file: './logs/logs.log'
     },
     rethinkdb: {
+        host: 'localhost',
         port: 28015,
-        db: process.env.DB_NAME || 'quiz'
+        db: process.env.DB_NAME || 'chatx'
     },
     redis: {
         //host:
