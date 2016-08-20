@@ -12,11 +12,11 @@ export function database$factory(dbName: string) {
     };
 }
 
-export function runQuery(query: Sequence): Observable {
+export function runQuery(query: Sequence) {
     return Observable.fromPromise(query.run())
 }
 
-export function changes$Factory(query): Observable<Change> {
+export function changes$Factory(query) {
     return Observable.create(observer => {
         let dispose;
         // TODO: close connection on dispose

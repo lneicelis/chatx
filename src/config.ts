@@ -10,9 +10,6 @@ export default {
         port: 28015,
         db: process.env.DB_NAME || 'chatx'
     },
-    redis: {
-        //host:
-    },
     api: {
         host: 'localhost',
         port: process.env.PORT || 3000

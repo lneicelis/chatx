@@ -2,8 +2,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "lib",
-    "allowJs": true,
-    "target": "ES5",
+    "allowJs": false,
+    "target": "es6",
     "experimentalDecorators": true
   },
   "exclude": [

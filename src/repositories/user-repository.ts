@@ -39,13 +39,13 @@ export function getUser(userId:string, database:Db = db) {
     return runQuery(userQuery(userId, database));
 }
 
-export function userChange$Factory(userId:string, database:Db = db):Observable<UserChange> {
+export function userChange$Factory(userId:string, database:Db = db) {
     return changes$Factory(
         userQuery(userId, database)
     );
 }
 
-export function userUpdate$Factory(userId:string, database:Db = db):Observable<User> {
+export function userUpdate$Factory(userId:string, database:Db = db) {
     return userChange$Factory(userId, database)
         .map(changes => changes.new_val)
 }

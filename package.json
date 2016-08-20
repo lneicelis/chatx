@@ -24,6 +24,7 @@
   "homepage": "https://github.com/luknei/chatx#readme",
   "devDependencies": {
     "assert": "^1.4.1",
+    "bluebird": "^3.4.1",
     "mocha": "^3.0.2",
     "nodemon": "^1.10.0",
     "sinon": "^1.17.5",

@@ -2,7 +2,7 @@ import {merge} from 'ramda';
 import {createDebugObserver} from '../../utils/debug-observer';
 import {getUser, updateUser,} from '../../repositories/user-repository';
 
-export function handleSocketConnection(db$, socket$) {
+export function handleSocketConnection(socket$) {
     return socket$
         .flatMap(socket => getUser(socket.userId))
         .map(user => merge(user, {
@@ -16,7 +16,7 @@ export function handleSocketConnection(db$, socket$) {
         );
 }
 
-export function handleSocketDisconnect(db$, socket$) {
+export function handleSocketDisconnect(socket$) {
     return socket$
         .flatMap(socket => getUser(socket.userId))
         .map(user => merge(user, {

@@ -40,7 +40,7 @@ export function pushNewMessages(message$, socket$) {
         )
 }
 
-export function pushLatestMessages(db$, socket$) {
+export function pushLatestMessages(socket$) {
     socket$
         .flatMap(socket => getUser(socket.userId)
             .map(user => user.readChannels)
@@ -52,15 +52,15 @@ export function pushLatestMessages(db$, socket$) {
         );
 }
 
-export function handleIncomingMessages(db$, actions$) {
+export function handleIncomingMessages(actions$) {
     return actions$
         .filter(action => action.type === C2S_SEND_MESSAGE)
         .map(action => merge(
             {userId: action.userId},
             action.payload
         ))
-        .flatMap(validMessage$(getUser))
-        .flatMap(persistMessage)
+        .flatMap(message => validMessage$(getUser, message))
+        .flatMap(message => persistMessage(message))
         .subscribe(
             createDebugObserver('handleIncomingMessages')
         );

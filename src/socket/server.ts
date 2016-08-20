@@ -34,13 +34,13 @@ export function run(io) {
     const actions$ = actions$Factory(socket$);
     const messages$ = db$.flatMap(createMessages$).share();
 
-    handleSocketConnection(db$, socket$);
-    handleSocketDisconnect(db$, socketDisconnect$);
+    handleSocketConnection(socket$);
+    handleSocketDisconnect(socketDisconnect$);
 
-    pushChannels(db$, socket$);
-    pushLatestMessages(db$, socket$);
+    pushChannels(socket$);
+    pushLatestMessages(socket$);
 
-    handleIncomingMessages(db$, actions$);
+    handleIncomingMessages(actions$);
 
     pushNewMessages(messages$, socket$);
 }
