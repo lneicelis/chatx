@@ -1,4 +1,3 @@
-
 export default {
     baseUrl: 'http://185.5.54.166:3001',
     secret: process.env.APP_SECRET || 'MySecret',

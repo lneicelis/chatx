@@ -33,7 +33,6 @@
   "dependencies": {
     "express": "^4.14.0",
     "jsonwebtoken": "^7.1.9",
-    "lodash": "^4.15.0",
     "ramda": "^0.22.1",
     "rethinkdbdash": "^2.3.21",
     "rx": "^4.1.0",

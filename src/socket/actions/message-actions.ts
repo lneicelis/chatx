@@ -32,7 +32,7 @@ export function pushNewMessages(message$, socket$) {
     return socket$
         .flatMap(socket => {
             const channelsIds$ = createUserUpdate$(socket.userId)
-                .map(user => [...user.readChannels, ...user.writeChannels]);
+                .map(user => user.readChannels);
 
             return message$
                 .withLatestFrom(
@@ -51,10 +51,7 @@ export function pushLatestMessages(db$, socket$) {
     socket$
         .flatMap(socket => db$
             .flatMap(getUser(socket.userId))
-            .map(user => [
-                ...user.readChannels,
-                ...user.writeChannels
-            ])
+            .map(user => user.readChannels)
             .flatMap(channelsIds => db$
                 .flatMap(db => findLatestInChannels(db, channelsIds))
             )

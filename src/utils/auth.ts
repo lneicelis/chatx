@@ -1,9 +1,9 @@
-import * as _ from 'lodash';
+import {path} from 'ramda';
 import * as jwt from 'jsonwebtoken';
 import config from '../config';
 
 export function authenticateSocket(socket) {
-    const token = _.get(socket, 'handshake.query.token');
+    const token = path(['handshake', 'query', 'token'], socket);
 
     console.log('token');
 

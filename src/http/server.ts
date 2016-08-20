@@ -8,6 +8,6 @@ export function createHttpServer() {
   app.use(express.static(config.publicDir));
 
   return app.listen(config.api.port, function () {
-    console.log('server is running on ' + config.api.port);
+    console.log('HTTP server is running on ' + config.api.port);
   });
 }

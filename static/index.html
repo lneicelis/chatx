@@ -1,6 +1,19 @@
 <html>
 <head>
-    <script src="/socket.io/socket.io.js"></script>
+    <script type="application/javascript">
+        var port = window.location.search.match(/port=(\d+)/)[1];
+
+        loadJS(`http://185.5.54.166:${port}/socket.io/socket.io.js`);
+
+        function loadJS(filename){
+            var fileref=document.createElement('script')
+            fileref.setAttribute("type", "text/javascript");
+            fileref.setAttribute("src", filename);
+            document.head.appendChild(fileref);
+        }
+    </script>
+
+    <script src="/client.js"></script>
 </head>
 
 <body>

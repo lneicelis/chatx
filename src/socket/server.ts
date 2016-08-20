@@ -10,9 +10,23 @@ import {handleSocketConnection, handleSocketDisconnect} from './actions/connecti
 import {pushLatestMessages, handleIncomingMessages, pushNewMessages} from './actions/message-actions';
 import {pushChannels} from './actions/channel-actions';
 
-export function createSocket(server) {
+export function attach(server) {
     const io = Server(server);
 
+    run(io);
+}
+
+export function create() {
+    const io = Server();
+
+    run(io);
+
+    io.listen(config.api.port);
+
+    console.log('Socket server is running on: ' + config.api.port);
+}
+
+export function run(io) {
     const createSocket$ = compose(authorizedSocket$Factory, socket$Factory);
 
     const socket$ = createSocket$(io).share();

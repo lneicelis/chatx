@@ -1,0 +1,51 @@
+{
+  "apps": [
+    // API
+    {
+      "name": "API",
+      "script": "lib/http-server.js",
+      "watch": [
+        "lib"
+      ],
+      "autorestart": true,
+      "env": {
+        "COMMON_VARIABLE": "true",
+        "PORT": 3000
+      },
+      "env_production": {
+        "NODE_ENV": "development"
+      }
+    },
+    // Socket servers
+    {
+      "name": "Socket server",
+      "script": "lib/socket-server.js",
+      "watch": [
+        "lib"
+      ],
+      "autorestart": true,
+      "env": {
+        "COMMON_VARIABLE": "true",
+        "PORT": 3001
+      },
+      "env_production": {
+        "NODE_ENV": "development"
+      }
+    },
+    {
+      "name": "Socket server",
+      "script": "lib/socket-server.js",
+      "watch": [
+        "lib"
+      ],
+      "autorestart": true,
+      "env": {
+        "COMMON_VARIABLE": "true",
+        "PORT": 3002
+      },
+      "env_production": {
+        "NODE_ENV": "development"
+      }
+    }
+  ]
+}
