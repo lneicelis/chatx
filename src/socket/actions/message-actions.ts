@@ -8,13 +8,18 @@ import {persistMessage, findLatestInChannels} from '../../repositories/message-r
 export const validMessage$ = curry(
     (getUser, message) => {
         return getUser(message.userId)
-            .filter(user => {
-                return user.writeChannels
-                    && user.writeChannels.includes(message.channelId)
+            .map(user => {
+                if (!Array.isArray(user.writeChannels)) {
+                    throw new Error('User write channels is not array!')
+                }
+                if (!user.writeChannels.includes(message.channelId)) {
+                    throw new Error(`User does not have permission to write to channel`)
+                }
+
+                return message;
             })
-            .map(() => message)
-            .catch(() => {
-                console.log('Invalid message', message);
+            .catch(error => {
+                console.log('Invalid message', error.message, message);
 
                 return Observable.empty()
             });

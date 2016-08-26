@@ -13,13 +13,13 @@ import {pushChannels} from './actions/channel-actions';
 export function attach(server) {
     const io = Server(server);
 
-    run(io);
+    run(io.of('/chatx'));
 }
 
 export function create() {
     const io = Server();
 
-    run(io);
+    run(io.of('/chatx'));
 
     io.listen(config.api.port);
 
