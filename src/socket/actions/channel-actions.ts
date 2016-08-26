@@ -20,6 +20,7 @@ export function pushChannelsFactory(userUpdate$Factory, socketDisconnected, find
                     ...user.readChannels,
                     ...user.writeChannels
                 ])
+                .distinct(channels => channels.join(''))
                 .flatMap(channelsIds => findChannels(channelsIds))
                 .do(emitAction(socket, S2C_SEND_CHANNELS))
             )
