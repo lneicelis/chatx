@@ -9,6 +9,7 @@ export const validMessage$ = curry(
     (getUser, message) => {
         return getUser(message.userId)
             .map(user => {
+                // TODO: strip tags
                 if (!Array.isArray(user.writeChannels)) {
                     throw new Error('User write channels is not array!')
                 }
