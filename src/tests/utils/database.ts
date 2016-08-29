@@ -2,20 +2,19 @@ process.env.DB_NAME = 'chatx_test';
 
 import config from '../../config';
 import * as rFactory from 'rethinkdbdash';
-import {coroutine} from 'bluebird';
 
 const r = rFactory(config.rethinkdb);
 
-export const cleanDb = coroutine(function*() {
-    var databases = yield r.dbList().run();
+export const cleanDb = async function () {
+    var databases = await r.dbList().run();
     var tables = ['channels', 'messages', 'users'];
 
     if (databases.indexOf(config.rethinkdb.db) > -1) {
         console.log('Dropping database.');
-        yield r.dbDrop(config.rethinkdb.db).run();
+        await r.dbDrop(config.rethinkdb.db).run();
     }
     console.log('Creating database.');
-    yield r.dbCreate(config.rethinkdb.db).run();
+    await r.dbCreate(config.rethinkdb.db).run();
 
 
     console.log('Creating tables.');
@@ -23,23 +22,23 @@ export const cleanDb = coroutine(function*() {
         return r.db(config.rethinkdb.db).tableCreate(table).run();
     });
 
-    yield Promise.all(tables);
+    await Promise.all(tables);
     console.log('tables created.');
-});
+};
 
-export const loadFixtures = coroutine(function* (table, data) {
-    yield r.db(config.rethinkdb.db)
+export const loadFixtures = async function(table, data) {
+    await r.db(config.rethinkdb.db)
         .table(table)
         .delete();
 
-    yield r.db(config.rethinkdb.db)
+    await r.db(config.rethinkdb.db)
         .table(table)
         .insert(data)
         .run()
-});
+};
 
-export const truncateTables = coroutine(function* () {
-    var tables = yield r.db(config.rethinkdb.db).tableList();
+export const truncateTables = async function() {
+    var tables = await r.db(config.rethinkdb.db).tableList();
     var promises = [];
 
     tables.forEach(function (table) {
@@ -47,5 +46,5 @@ export const truncateTables = coroutine(function* () {
         promises.push(r.db(config.rethinkdb.db).table(table).delete().run());
     });
 
-    yield Promise.all(promises);
-});
+    await Promise.all(promises);
+};
