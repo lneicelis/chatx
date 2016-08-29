@@ -41,13 +41,13 @@ export function createSocketDisconnect$(socket$) {
         })
 }
 
-export function authorizedSocket$Factory(socket$:Observable) {
+export function authorizedSocket$Factory(socket$) {
     return socket$
         .map(authenticateSocket)
         .catch(err => authorizedSocket$Factory(socket$));
 }
 
-export function actions$Factory(socket$:Observable) {
+export function actions$Factory(socket$) {
     return socket$.flatMap(socketActions$);
 }
 
