@@ -38,6 +38,7 @@ export function run(io) {
     handleSocketDisconnect(socketDisconnect$);
 
     pushChannels(socket$);
+
     pushLatestMessages(socket$);
 
     handleIncomingMessages(actions$);

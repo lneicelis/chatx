@@ -11,6 +11,7 @@ export default {
         db: process.env.DB_NAME || 'chatx'
     },
     api: {
+        secret: 'SecretAPI',
         host: 'localhost',
         port: process.env.PORT || 3000
     },

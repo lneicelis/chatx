@@ -5,8 +5,10 @@
     "socket.io": "registry:dt/socket.io#1.4.4+20160317120654"
   },
   "dependencies": {
+    "body-parser": "registry:npm/body-parser#1.15.2+20160815132839",
     "express": "registry:npm/express#4.14.0+20160815112707",
     "jsonwebtoken": "registry:npm/jsonwebtoken#7.1.8+20160811031426",
-    "ramda": "registry:npm/ramda#0.21.0+20160531162943"
+    "ramda": "registry:npm/ramda#0.21.0+20160531162943",
+    "serve-static": "registry:npm/serve-static#1.11.1+20160810053450"
   }
 }

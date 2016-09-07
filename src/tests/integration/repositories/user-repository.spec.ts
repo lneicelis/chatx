@@ -2,9 +2,9 @@ process.env.DB_NAME = 'chatx_test';
 
 import * as assert from 'assert';
 import {loadFixtures} from '../../utils/database';
-import {getUser} from '../../../repositories/user-repository';
+import {findUser} from '../../../repositories/user-repository';
 
-describe('getUser', () => {
+describe('findUser', () => {
     beforeEach(done => {
         loadFixtures('users', [
             {
@@ -15,7 +15,7 @@ describe('getUser', () => {
     });
 
     it('should return user', done => {
-        getUser('testId').subscribe({
+        findUser('testId').subscribe({
             onNext: user => {
                 assert(
                     user.id === 'testId'

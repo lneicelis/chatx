@@ -1,12 +1,12 @@
 ;(function (window) {
   window.createClient = createClient;
 
-  function createClient(namespace) {
+  function createClient(accessToken, namespace) {
     namespace = namespace || 'chatx';
 
     const url = `http://185.5.54.166:${port}/${namespace}`;
     const socket = io(url, {
-      query: 'token=abc'
+      query: `token=${accessToken}`
     });
 
     const listenersByActionType = {};

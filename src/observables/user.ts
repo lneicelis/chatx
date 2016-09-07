@@ -1,14 +1,14 @@
 import {Observable} from 'rx';
 import {db$} from './database';
 import {authorizedSocket$Factory, socketActions$} from './socket';
-import {getUser, userUpdate$Factory} from '../repositories/user-repository';
+import {findUser, userUpdate$Factory} from '../repositories/user-repository';
 
 export function userUpdates$(userId) {
     return db$.flatMap(userUpdate$Factory(userId));
 }
 
 export function user$(userId) {
-    return db$.flatMap(getUser(userId));
+    return db$.flatMap(findUser(userId));
 }
 
 export function createUser$(userId) {

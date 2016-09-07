@@ -1,13 +1,23 @@
 import config from '../config';
 import * as express from 'express';
-import * as jwt from 'jsonwebtoken';
+import * as bodyParser from 'body-parser';
+import routes from './routes';
+
+export function createApp() {
+    const app = express();
+
+    app.use(express.static(config.publicDir));
+    app.use(bodyParser.json());
+
+    routes(app);
+
+    return app;
+}
 
 export function createHttpServer() {
-  const app = express();
+    const app = createApp();
 
-  app.use(express.static(config.publicDir));
-
-  return app.listen(config.api.port, function () {
-    console.log('HTTP server is running on ' + config.api.port);
-  });
+    return app.listen(config.api.port, function () {
+        console.log('HTTP server is running on ' + config.api.port);
+    });
 }

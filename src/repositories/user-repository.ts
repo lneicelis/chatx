@@ -27,6 +27,13 @@ export const userQuery = (userId:string, database:Db) => {
         .get(userId);
 };
 
+export function createUser(data, database:Db = db) {
+    return database
+        .table('users')
+        .insert(data)
+        .run();
+}
+
 export function updateUser(userId:string, data, database:Db = db) {
     return database
         .table('users')
@@ -35,7 +42,15 @@ export function updateUser(userId:string, data, database:Db = db) {
         .run();
 }
 
-export function getUser(userId:string, database:Db = db) {
+export function deleteUser(userId:string, database:Db = db) {
+    return database
+        .table('users')
+        .get(userId)
+        .delete()
+        .run();
+}
+
+export function findUser(userId:string, database:Db = db) {
     return runQuery(userQuery(userId, database));
 }
 

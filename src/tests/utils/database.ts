@@ -3,7 +3,7 @@ process.env.DB_NAME = 'chatx_test';
 import config from '../../config';
 import * as rFactory from 'rethinkdbdash';
 
-const r = rFactory(config.rethinkdb);
+export const r = rFactory(config.rethinkdb);
 
 export const cleanDb = async function () {
     var databases = await r.dbList().run();
@@ -13,16 +13,14 @@ export const cleanDb = async function () {
         console.log('Dropping database.');
         await r.dbDrop(config.rethinkdb.db).run();
     }
-    console.log('Creating database.');
+    console.log('Creating database: ' + config.rethinkdb.db);
     await r.dbCreate(config.rethinkdb.db).run();
 
+    for (let table of tables) {
+        console.log('Creating table: ', table);
+        await r.db(config.rethinkdb.db).tableCreate(table).run();
+    }
 
-    console.log('Creating tables.');
-    tables.map(function (table) {
-        return r.db(config.rethinkdb.db).tableCreate(table).run();
-    });
-
-    await Promise.all(tables);
     console.log('tables created.');
 };
 

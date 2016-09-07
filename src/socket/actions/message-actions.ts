@@ -2,7 +2,7 @@ import {merge, curry} from 'ramda';
 import {Observable} from 'rx';
 import {createDebugObserver} from '../../utils/debug-observer';
 import {emitAction, C2S_SEND_MESSAGE, S2C_SEND_MESSAGES} from '../action-types';
-import {getUser, createUserUpdate$} from '../../repositories/user-repository';
+import {findUser, createUserUpdate$} from '../../repositories/user-repository';
 import {persistMessage, findLatestInChannels} from '../../repositories/message-repository';
 
 export const validMessage$ = curry(
@@ -48,7 +48,7 @@ export function pushNewMessages(message$, socket$) {
 
 export function pushLatestMessages(socket$) {
     socket$
-        .flatMap(socket => getUser(socket.userId)
+        .flatMap(socket => findUser(socket.userId)
             .map(user => user.readChannels)
             .flatMap(readChannelsIds => findLatestInChannels(readChannelsIds))
             .do(emitAction(socket, S2C_SEND_MESSAGES))
@@ -65,7 +65,7 @@ export function handleIncomingMessages(actions$) {
             {userId: action.userId},
             action.payload
         ))
-        .flatMap(message => validMessage$(getUser, message))
+        .flatMap(message => validMessage$(findUser, message))
         .flatMap(message => persistMessage(message))
         .subscribe(
             createDebugObserver('handleIncomingMessages')
