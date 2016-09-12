@@ -6,78 +6,78 @@ import * as config from '../../../config';
 
 const secret = config.default.api.secret;
 
-describe('Users API Routes', function () {
-    const userId = 'longLongFakeId';
+describe.only('Channels API Routes', function () {
+    const channelId = 'longLongFakeId';
     const API = superagent(createApp());
 
     beforeEach(done => {
-        loadFixtures('users', {
-            id: userId,
-            username: 'fixture'
+        loadFixtures('channels', {
+            id: channelId,
+            title: 'fixtureTitle'
         }).then(done);
     });
 
-    describe('GET /users/:userId', () => {
+    describe('GET /channels/:channelId', () => {
         it('requires secret token', done => {
-            API.get(`/users/${userId}`)
+            API.get(`/channels/${channelId}`)
                 .expect(401)
                 .end(done);
         });
 
-        it('should return 200 and should return 1 user', done => {
-            API.get(`/users/${userId}`)
+        it('should return 200 and should return 1 channel', done => {
+            API.get(`/channels/${channelId}`)
                 .set('Authorization', secret)
                 .expect(200)
-                .end(function (err, res) {
-                    assert(res.body.id === userId);
+                .end((err, res) => {
+                    assert(res.body.id === channelId, 'Actual: ' + JSON.stringify(res.body));
                     done();
                 })
             ;
         });
     });
 
-    describe('POST /users', () => {
+    describe('POST /channels', () => {
         it('requires secret token', done => {
-            API.post('/users')
+            API.post('/channels')
                 .send({username: 'test1'})
                 .expect(401)
                 .end(done)
             ;
         });
 
-        it('creates new user', done => {
-            API.post('/users')
+        it('creates new channel', done => {
+            API.post('/channels')
                 .set('Authorization', secret)
                 .send({
-                    username: 'test1'
+                    title: 'test1'
                 })
                 .expect(200)
                 .end((err, res) => {
-                    assert(res.body.userId.length === 36);
+                    assert(res.body.channelId.length === 36, JSON.stringify(res.body));
                     done();
                 })
             ;
         });
     });
 
-    describe('PATCH /users/:userId', function () {
+    describe('PATCH /channels/:channelId', function () {
         it('requires secret token', function (done) {
-            API.patch('/users/' + userId)
+            API.patch('/channels/' + channelId)
                 .expect(401)
                 .end(done)
             ;
         });
 
         it('updates user properties', function (done) {
-            API.patch('/users/' + userId)
+            API.patch('/channels/' + channelId)
                 .set('Authorization', secret)
                 .send({
-                    readChannels: ['test2']
+                    title: 'title update'
                 })
                 .expect(200)
                 .end((err, res) => {
-                    r.table('users').get(userId).run().then(user => {
-                        assert(user.readChannels[0] === 'test2');
+                    r.table('channels').get(channelId).run().then(channel => {
+                        assert(channel.title === 'title update', JSON.stringify(res));
 
                         done();
                     });
@@ -86,43 +86,23 @@ describe('Users API Routes', function () {
         });
     });
 
-    describe('DELETE /users/:userId', () => {
+    describe('DELETE /channels/:channelId', () => {
         it('requires secret token', done => {
-            API.delete('/users/' + userId)
+            API.delete('/channels/' + channelId)
                 .expect(401)
                 .end(done)
             ;
         });
 
         it('should return 200', done => {
-            API.delete('/users/' + userId)
+            API.delete('/channels/' + channelId)
                 .set('Authorization', secret)
                 .expect(200)
                 .end((err, res) => {
-                    r.table('users').count().run().then(count => {
+                    r.table('channels').count().run().then(count => {
                         assert(count === 0);
                         done();
                     });
-                })
-            ;
-        });
-    });
-
-    describe('GET /users/:userId/access-token', () => {
-        it('requires secret token', done => {
-            API.get('/users/' + userId + '/access-token')
-                .expect(401)
-                .end(done)
-            ;
-        });
-
-        it('responds with {accessToken: "string"}', function (done) {
-            API.get('/users/' + userId + '/access-token')
-                .set('Authorization', secret)
-                .expect(200)
-                .end((err, res) => {
-                    assert(typeof res.body.accessToken === 'string');
-                    done();
                 })
             ;
         });

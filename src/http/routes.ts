@@ -1,6 +1,8 @@
 import config from '../config';
 import {generateToken, getUser, createUser, updateUser, deleteUser} from './controllers/users';
+import {getChannel, createChannel, updateChannel, deleteChannel} from './controllers/channels';
 import {userCreate, userUpdate} from './requests/users';
+import {channelCreate, channelUpdate} from './requests/channels';
 import * as Joi from 'joi';
 
 export default function (app) {
@@ -9,6 +11,11 @@ export default function (app) {
     app.post('/users', auth, validate(userCreate), wrap(createUser));
     app.patch('/users/:userId', auth, validate(userUpdate), wrap(updateUser));
     app.delete('/users/:userId', auth, wrap(deleteUser));
+
+    app.get('/channels/:channelId', auth, wrap(getChannel));
+    app.post('/channels', auth, validate(channelCreate), wrap(createChannel));
+    app.patch('/channels/:channelId', auth, validate(channelUpdate), wrap(updateChannel));
+    app.delete('/channels/:channelId', auth, wrap(deleteChannel));
 }
 
 function wrap(action) {
@@ -25,7 +32,7 @@ function wrap(action) {
         if (result.then) {
             return result
                 .then(response => res.json(response))
-                .error(err => res.json(err));
+                .catch(err => res.json(err));
         }
 
         res.json(result);
